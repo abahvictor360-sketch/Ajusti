@@ -9,7 +9,7 @@
                   separate cache that is trimmed so it cannot grow forever
    =========================================================== */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL = `ajusti-shell-${VERSION}`;
 const IMAGES = `ajusti-images-${VERSION}`;
 const MAX_IMAGES = 80;
@@ -21,7 +21,8 @@ const PRECACHE = [
   'wishlist.html', 'account.html', 'offline.html',
   'css/style.css', 'js/main.js', 'js/products.js',
   'manifest.webmanifest',
-  'assets/site/hero-model.webp',
+  'assets/site/hero-model.webp', 'assets/site/hero-couple.webp',
+  'assets/site/hero-adire.webp', 'assets/site/hero-bag.webp',
   'assets/icons/icon-192.png', 'assets/icons/icon-512.png'
 ];
 

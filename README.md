@@ -14,7 +14,7 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 | File | What it does |
 | --- | --- |
-| `index.html` | Home: hero, categories, new arrivals, deal banner, best sellers, reviews |
+| `index.html` | Home: four-slide hero carousel, categories, new arrivals, deal banner, best sellers, reviews |
 | `shop.html` | Full catalogue with category/price/rating/offer filters, sorting and search (`?cat=`, `?q=`, `?sort=`) |
 | `product.html` | Product detail (`?id=<product-id>`): gallery, colour and size pickers, quantity, accordions, related items |
 | `deals.html` | Everything currently marked down, plus an under-₦40,000 rail |
@@ -25,6 +25,23 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 | `blog.html` | Journal — styling, fabric care, measurements |
 | `contact.html` | Contact form, studio details, FAQ accordion |
 | `account.html` | Sign in / register / track order |
+
+## Hero carousel
+
+Four slides, each selling a different category with its own copy, cut-out
+image, disc colour and pair of calls to action. They are authored as static
+markup in `index.html` (so the first slide is the LCP image and needs no JS
+to appear) and driven by the script at the bottom of that file.
+
+Slides share one CSS grid cell, so the section is as tall as the tallest
+slide and nothing jumps on change. Autoplay runs every 6.5s and pauses on
+hover, on focus, on touch, when the tab is hidden, and entirely under
+`prefers-reduced-motion`. Arrows, dots, swipe and arrow keys all navigate;
+inactive slides are `visibility: hidden` so their links stay out of the tab
+order.
+
+To edit a slide, change its `.hero-slide` block: `--disc` sets the disc
+colour and `--art-h` the figure height.
 
 ## Installable (PWA)
 
