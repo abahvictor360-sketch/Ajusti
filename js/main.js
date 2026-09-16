@@ -394,11 +394,72 @@ function initCounters() {
   els.forEach(el => io.observe(el));
 }
 
+
+/* ===========================================================
+   PWA
+   Registers the service worker and offers an install prompt.
+   Both are skipped on file:// where they cannot work.
+   =========================================================== */
+function initPWA() {
+  if (location.protocol === 'file:') return;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+
+  // Chrome/Edge/Android fire this when the site is installable. iOS does not,
+  // so Safari users add it from the Share sheet instead.
+  let deferred;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferred = e;
+    if (store.get('installDismissed', false)) return;
+    showInstallBanner();
+  });
+
+  function showInstallBanner() {
+    if (document.querySelector('.install-banner')) return;
+    const el = document.createElement('div');
+    el.className = 'install-banner';
+    el.innerHTML = `
+      <img src="assets/icons/icon-192.png" alt="" width="42" height="42">
+      <div>
+        <b>Install Ajusti</b>
+        <small>Add the shop to your home screen — works offline too.</small>
+      </div>
+      <button class="btn btn-primary btn-sm" data-install>Install</button>
+      <button class="install-close" aria-label="Dismiss">&times;</button>`;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+
+    el.querySelector('[data-install]').addEventListener('click', async () => {
+      el.classList.remove('show');
+      if (!deferred) return;
+      deferred.prompt();
+      await deferred.userChoice;
+      deferred = null;
+    });
+    el.querySelector('.install-close').addEventListener('click', () => {
+      el.classList.remove('show');
+      store.set('installDismissed', true);
+      setTimeout(() => el.remove(), 300);
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    document.querySelector('.install-banner')?.remove();
+    toast('Ajusti installed — find it on your home screen');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.documentElement.classList.add('js');
   refreshMotion();
   initChrome();
   initCounters();
+  initPWA();
   // grids rendered by page scripts land a tick later
   setTimeout(refreshMotion, 0);
 });

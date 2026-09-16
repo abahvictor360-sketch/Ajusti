@@ -26,6 +26,23 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 | `contact.html` | Contact form, studio details, FAQ accordion |
 | `account.html` | Sign in / register / track order |
 
+## Installable (PWA)
+
+The site is a progressive web app: `manifest.webmanifest` describes it,
+`sw.js` caches it, and Android/desktop visitors get an install prompt.
+iOS users add it from Safari's Share sheet.
+
+The service worker picks a strategy per request type:
+
+| Request | Strategy | Why |
+| --- | --- | --- |
+| Pages | Network first, cache fallback, then `offline.html` | Prices and stock are never served stale |
+| CSS / JS | Stale-while-revalidate | Instant load, updates quietly in the background |
+| Images | Cache first, capped at 80 files | They never change in place, so re-fetching wastes data |
+
+Bump `VERSION` in `sw.js` when you need to force every client onto a fresh
+shell; old caches are deleted on activate.
+
 ## Structure
 
 ```
@@ -33,7 +50,9 @@ css/style.css     all styling, one file, CSS custom properties at the top
 js/products.js    catalogue data — 49 products across 5 categories, sizes, helpers
 js/main.js        shared header/footer, cart + wishlist state, product card rendering
 assets/products/  product photography (800×800)
-assets/site/      hero, deal banner and about imagery
+assets/site/      hero cut-out, deal banner and about imagery
+assets/icons/     PWA and home-screen icons
+manifest.webmanifest, sw.js, offline.html   PWA files
 ```
 
 The header and footer are injected by `js/main.js` so every page stays in sync —
@@ -54,6 +73,14 @@ Drop an 800×800 JPEG into `assets/products/<id>.jpg`, then add an entry to
 
 `tags` accepts `hot`, `new` and `sale`; `was` adds a strikethrough price and puts
 the piece on the deals page. It appears across the site automatically.
+
+## Responsive
+
+Verified with a scripted sweep at 320, 360, 375, 390, 414, 480, 600, 768,
+834, 1024, 1280, 1440 and 1920px across every page — no horizontal scroll
+and nothing overflowing the viewport at any of them. Layout shifts down
+through four breakpoints (1040, 880, 620, 430) plus a 380px stack for the
+narrowest phones.
 
 ## Notes
 
