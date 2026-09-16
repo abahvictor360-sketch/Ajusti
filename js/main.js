@@ -24,7 +24,8 @@ const ICON = {
   ig: '<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.4"/><circle cx="17" cy="7" r="1"/>',
   fb: '<path d="M14 9h3V5h-3a4 4 0 00-4 4v2H8v4h2v6h4v-6h3l1-4h-4V9.5A.5.5 0 0114 9z"/>',
   wa: '<path d="M4 20l1.3-4A8 8 0 1112 20a8 8 0 01-4-1L4 20z"/><path d="M9 10c0 3 2 5 5 5 1.5 0 1.5-2 1-2.2l-1.4-.5-.8 1c-1-.4-1.7-1.1-2.1-2.1l1-.8-.5-1.4C11 8.5 9 8.5 9 10z"/>',
-  x: '<path d="M5 5l14 14M19 5L5 19"/>'
+  x: '<path d="M5 5l14 14M19 5L5 19"/>',
+  up: '<path d="M12 19V5M5 12l7-7 7 7"/>'
 };
 const svg = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 
@@ -253,6 +254,7 @@ function renderGrid(el, list) {
   el.innerHTML = list.length
     ? list.map(productCard).join('')
     : `<p class="empty">No pieces match that search yet. Try another style or <a href="shop.html" style="color:var(--coral)">browse everything</a>.</p>`;
+  if (typeof refreshMotion === 'function') refreshMotion();
 }
 
 /* delegated actions for add-to-bag / wishlist anywhere on the page */
@@ -264,3 +266,118 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('DOMContentLoaded', renderShell);
+
+/* ===========================================================
+   Motion
+   Scroll reveals, a sticky-header state, a progress bar and a
+   back-to-top button. All of it is skipped when the visitor
+   asks for reduced motion.
+   =========================================================== */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Tag elements that should fade in, unless the page already marked them up. */
+function markReveals() {
+  const auto = [
+    ['.sec-head', ''], ['.cat-card', 'zoom'], ['.product-card', ''], ['.quote', ''],
+    ['.post', ''], ['.trust > div', ''], ['.perks > div', ''], ['.deal', 'zoom'],
+    ['.newsletter', ''], ['.card', ''], ['.stat-row > div', ''], ['.page-head > .wrap', ''],
+    ['.filters', 'left'], ['.split > *', ''], ['.pdp > *', '']
+  ];
+  auto.forEach(([sel, kind]) => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (el.closest('.hero') || el.hasAttribute('data-reveal')) return;
+      el.setAttribute('data-reveal', kind);
+    });
+  });
+  // stagger siblings inside a row or grid so they arrive one after another
+  document.querySelectorAll('.product-grid, .cat-grid, .quote-grid, .blog-grid, .trust, .perks, .stat-row')
+    .forEach(grid => [...grid.children].forEach((el, i) =>
+      el.style.setProperty('--d', Math.min(i, 7) * 70 + 'ms')));
+}
+
+let revealObserver;
+function observeReveals() {
+  if (REDUCED) return;
+  revealObserver = revealObserver || new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      obs.unobserve(e.target);           // reveal once, then stop watching
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+
+  document.querySelectorAll('[data-reveal]:not(.in)').forEach(el => {
+    // anything already on screen at load shows immediately, no flash
+    if (el.getBoundingClientRect().top < window.innerHeight * .92) el.classList.add('in');
+    else revealObserver.observe(el);
+  });
+}
+
+/* Re-run after a grid is rendered from JS. */
+function refreshMotion() {
+  markReveals();
+  observeReveals();
+}
+
+function initChrome() {
+  const bar = document.createElement('div');
+  bar.className = 'scroll-progress';
+  const top = document.createElement('button');
+  top.className = 'to-top';
+  top.setAttribute('aria-label', 'Back to top');
+  top.innerHTML = svg('up');
+  top.addEventListener('click', () =>
+    window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }));
+  document.body.append(bar, top);
+
+  const header = document.querySelector('.site-header');
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
+      header?.classList.toggle('stuck', y > 10);
+      top.classList.toggle('show', y > window.innerHeight * .7);
+      ticking = false;
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* Counts a number up when it scrolls into view (about page stats). */
+function initCounters() {
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length) return;
+  const run = el => {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const decimals = (el.dataset.count.split('.')[1] || '').length;
+    if (REDUCED) { el.textContent = target.toFixed(decimals) + suffix; return; }
+    const start = performance.now(), dur = 1400;
+    const step = now => {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = (target * eased).toFixed(decimals) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
+  }, { threshold: .4 });
+  els.forEach(el => io.observe(el));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.classList.add('js');
+  refreshMotion();
+  initChrome();
+  initCounters();
+  // grids rendered by page scripts land a tick later
+  setTimeout(refreshMotion, 0);
+});
+
