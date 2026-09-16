@@ -25,9 +25,15 @@ const ICON = {
   fb: '<path d="M14 9h3V5h-3a4 4 0 00-4 4v2H8v4h2v6h4v-6h3l1-4h-4V9.5A.5.5 0 0114 9z"/>',
   wa: '<path d="M4 20l1.3-4A8 8 0 1112 20a8 8 0 01-4-1L4 20z"/><path d="M9 10c0 3 2 5 5 5 1.5 0 1.5-2 1-2.2l-1.4-.5-.8 1c-1-.4-1.7-1.1-2.1-2.1l1-.8-.5-1.4C11 8.5 9 8.5 9 10z"/>',
   x: '<path d="M5 5l14 14M19 5L5 19"/>',
-  up: '<path d="M12 19V5M5 12l7-7 7 7"/>'
+  up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  waSolid: '<path fill="currentColor" stroke="none" d="M19.05 4.91A10 10 0 0012 2 10 10 0 003.4 17.05L2 22l5.07-1.33A10 10 0 0012 22 10 10 0 0019.05 4.91zM12 20.2a8.2 8.2 0 01-4.2-1.15l-.3-.18-3.1.81.83-3.02-.2-.31A8.2 8.2 0 1112 20.2zm4.5-6.15c-.25-.12-1.46-.72-1.68-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.15.16-.29.18-.53.06a6.7 6.7 0 01-1.98-1.22 7.4 7.4 0 01-1.37-1.7c-.14-.25-.01-.38.11-.5l.37-.44c.12-.14.16-.24.25-.4.08-.17.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.41-.56-.42h-.47a.9.9 0 00-.66.3c-.22.25-.87.85-.87 2.07s.9 2.4 1.02 2.56c.12.17 1.75 2.67 4.24 3.74.6.25 1.06.4 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.17-.47-.3z"/>'
 };
 const svg = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+
+/* ---------- contact ---------- */
+const WHATSAPP = '2347018317175';   // +234 701 831 7175
+const waLink = msg =>
+  `https://wa.me/${WHATSAPP}${msg ? '?text=' + encodeURIComponent(msg) : ''}`;
 
 /* ---------- persisted state ---------- */
 const store = {
@@ -155,7 +161,7 @@ function renderShell() {
               <div class="socials">
                 <a href="#" aria-label="Instagram">${svg('ig')}</a>
                 <a href="#" aria-label="Facebook">${svg('fb')}</a>
-                <a href="#" aria-label="WhatsApp">${svg('wa')}</a>
+                <a href="${waLink('Hi Ajusti, I have a question.')}" target="_blank" rel="noopener" aria-label="WhatsApp">${svg('wa')}</a>
                 <a href="#" aria-label="X">${svg('x')}</a>
               </div>
             </div>
@@ -178,7 +184,7 @@ function renderShell() {
               <h4>Visit us</h4>
               <ul>
                 <li class="muted">12 Adeniran Ogunsanya Street,<br>Surulere, Lagos</li>
-                <li><a href="tel:+2348012345678">+234 801 234 5678</a></li>
+                <li><a href="tel:+2347018317175">+234 701 831 7175</a></li>
                 <li><a href="mailto:hello@ajusti.com">hello@ajusti.com</a></li>
                 <li class="muted">Mon–Sat, 9am – 7pm WAT</li>
               </ul>
@@ -329,6 +335,22 @@ function initChrome() {
   top.addEventListener('click', () =>
     window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }));
   document.body.append(bar, top);
+
+  // Floating WhatsApp button. Pages can set WA_MESSAGE before this runs to
+  // prefill the chat — the product page names the piece you were looking at.
+  const wa = document.createElement('a');
+  wa.className = 'wa-fab';
+  wa.href = waLink(window.WA_MESSAGE || 'Hi Ajusti, I saw your site and I have a question.');
+  wa.target = '_blank';
+  wa.rel = 'noopener';
+  wa.setAttribute('aria-label', 'Chat with Ajusti on WhatsApp');
+  wa.innerHTML = `${svg('waSolid')}<span>Chat with us</span>`;
+  const syncWa = () =>
+    wa.href = waLink(window.WA_MESSAGE || 'Hi Ajusti, I saw your site and I have a question.');
+  wa.addEventListener('pointerdown', syncWa);
+  wa.addEventListener('focus', syncWa);
+  setTimeout(syncWa, 0);
+  document.body.appendChild(wa);
 
   const header = document.querySelector('.site-header');
   let ticking = false;

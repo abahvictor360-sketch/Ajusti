@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sel = { size: sizes[0], color: p.colors[0], qty: 1 };
 
   document.title = `${p.name} — Ajusti`;
+  window.WA_MESSAGE = `Hi Ajusti, I'm interested in the ${p.name} (${money(p.price)}). Is it available?`;
   document.getElementById('crumb').textContent = p.name;
 
   // gallery: the product itself plus three siblings for context
@@ -83,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="qty"><button id="minus" aria-label="Decrease">−</button><span id="qty">1</span><button id="plus" aria-label="Increase">+</button></div>
         <button class="btn btn-primary" id="addBtn">Add to Bag</button>
         <button class="btn btn-ghost" data-wish="${p.id}" id="wishBtn">♡ Wishlist</button>
+        <a class="btn btn-ghost" id="askBtn" target="_blank" rel="noopener"
+           href="${waLink(`Hi Ajusti, I'm interested in the ${p.name} (${money(p.price)}). Is it available?`)}">Ask on WhatsApp</a>
       </div>
 
       <div class="pdp-meta">

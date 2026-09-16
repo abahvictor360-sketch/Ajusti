@@ -37,6 +37,7 @@
         <div class="summary-row total"><span>Total</span><b id="total">₦0</b></div>
         <a class="btn btn-primary btn-block" href="checkout.html" style="margin-top:1rem">Proceed to Checkout</a>
         <a class="btn btn-ghost btn-block" href="shop.html" style="margin-top:.6rem">Continue Shopping</a>
+        <a class="btn btn-ghost btn-block" id="orderWa" target="_blank" rel="noopener" style="margin-top:.6rem">Order on WhatsApp instead</a>
         <p class="muted" style="font-size:.8rem;margin-bottom:0">Free delivery on orders above ₦150,000. Pay on delivery available in Lagos.</p>
       </aside>
     </div>
@@ -57,6 +58,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   let promoOn = store.get('promo', false);
+  window.WA_MESSAGE = 'Hi Ajusti, I have a question about my order.';
 
   function draw() {
     const list = document.getElementById('cartList');
@@ -112,6 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
     else toast('That code is not valid');
     draw();
   });
+
+  const waBtn = document.getElementById('orderWa');
+  if (waBtn) waBtn.href = waLink(
+    'Hi Ajusti, I would like to order:\n' +
+    (cart.length
+      ? cart.map(l => `• ${l.qty} × ${l.name} (size ${l.size}) — ${money(l.price * l.qty)}`).join('\n')
+      : '(nothing in my bag yet)'));
 
   draw();
   renderGrid(document.getElementById('suggest'),
