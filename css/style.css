@@ -149,7 +149,10 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
 .search-panel input:focus { outline: none; border-color: var(--coral); }
 
 /* ---------- hero ---------- */
-.hero { position: relative; overflow: hidden; background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%); }
+.hero {
+  position: relative; overflow: hidden; padding: 0;   /* it is a <section>, so opt out of the global section padding */
+  background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+}
 
 /* ---------- hero carousel ---------- */
 /* Slides share one grid cell, so the section is as tall as the tallest
@@ -162,23 +165,23 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
 }
 .hero-slide.on { opacity: 1; visibility: visible; }
 
+/* One control bar under the slides: at ~1080px the side arrows sat on top
+   of the headline, and a single centred row works at every width. */
+.hero-controls {
+  position: absolute; left: 0; right: 0; bottom: 20px; z-index: 6;
+  display: flex; justify-content: center; align-items: center; gap: .9rem;
+}
 .hero-arrow {
-  position: absolute; top: 50%; translate: 0 -50%; z-index: 4;
-  width: 44px; height: 44px; border-radius: 50%; background: var(--white);
-  color: var(--ink); font-size: 1.6rem; line-height: 1; display: grid; place-items: center;
+  width: 38px; height: 38px; border-radius: 50%; background: var(--white);
+  color: var(--ink); font-size: 1.4rem; line-height: 1; display: grid; place-items: center;
   box-shadow: var(--shadow); transition: background .2s ease, color .2s ease, scale .2s ease;
 }
 .hero-arrow:hover { background: var(--coral); color: #fff; scale: 1.06; }
-.hero-arrow.prev { left: 14px; }
-.hero-arrow.next { right: 14px; }
 
-.hero-dots {
-  position: absolute; left: 0; right: 0; bottom: 34px; z-index: 6;
-  display: flex; justify-content: center; gap: .5rem;
-}
+.hero-dots { display: flex; gap: .5rem; }
 .hero-dot-btn {
   width: 9px; height: 9px; border-radius: 999px; background: rgba(31, 26, 23, .22);
-  padding: 0; box-shadow: 0 0 0 4px rgba(253, 246, 241, .75);   /* keeps them legible over art */
+  padding: 0;
   transition: width .3s ease, background .3s ease;
 }
 .hero-dot-btn.on { width: 28px; background: var(--coral); }
@@ -490,8 +493,10 @@ section { padding: 3.2rem 0; }
   .trust > div:nth-child(n+3), .perks > div:nth-child(n+3) { border-top: 1px solid var(--line); padding-top: 1rem; }
   .pdp, .cart-layout, .split, .deal { grid-template-columns: 1fr; }
   .deal-img { display: none; }
-  .deal-copy.with-stamp { padding-left: 2.4rem; padding-top: 6.5rem; }
-  .deal-stamp { top: 1.6rem; transform: none; }
+  /* Stamp becomes part of the flow instead of floating over the heading,
+     with its own margins so the rounded banner corner cannot clip it. */
+  .deal-stamp { position: static; transform: none; width: 88px; height: 88px; margin: 2rem 0 0 2.4rem; }
+  .deal-copy.with-stamp { padding: 1.2rem 2.4rem 2.2rem; }
   .shop-layout { grid-template-columns: 1fr; }
   .filters { display: none; position: static; }
   .filters.open { display: block; }
@@ -641,11 +646,6 @@ section { padding: 3.2rem 0; }
   .topbar { font-size: .72rem; padding: .5rem 12px; }
 }
 
-@media (max-width: 360px) {
-  .product-grid { grid-template-columns: 1fr; }   /* two columns get too cramped */
-  .cat-grid { grid-template-columns: 1fr; }
-  .hero-cta .btn { width: 100%; }
-}
 
 
 /* Narrowest phones (320–380px): two-up strips and the four-column footer
@@ -687,6 +687,32 @@ section { padding: 3.2rem 0; }
 /* Carousel on small screens: no arrows (swipe instead), dots sit clear of
    the stacked layout. */
 @media (max-width: 700px) {
-  .hero-arrow { display: none; }
-  .hero-inner { padding-bottom: 3.2rem; }
+  .hero-controls { bottom: 14px; gap: .7rem; }
+  .hero-arrow { width: 34px; height: 34px; font-size: 1.25rem; }
+}
+
+
+/* Portrait tablets and split-screen windows (620–760px): three product
+   columns leave about 180px per card, which is too tight to read. */
+@media (max-width: 760px) {
+  .product-grid, .cat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Stacked hero: without the side-by-side layout the section was mostly
+   empty space, so tighten the padding and let the art size itself. */
+@media (max-width: 880px) {
+  /* Stacked rows stretch by default, which padded dead space above the
+     copy; start-align them so the hero is only as tall as its content. */
+  .hero-inner { padding: 2rem 20px 3.4rem; gap: 1.2rem; align-content: start; }
+  .hero-slide { align-self: start; }
+  .hero-art { min-height: 0; }
+  .hero h1 { margin: 1rem 0 .8rem; }
+  .hero-cta { margin-top: 1.4rem; }
+}
+
+/* Smallest phones last, so it wins over the two-column rules above:
+   at 320px a two-up grid leaves 136px per card. */
+@media (max-width: 360px) {
+  .product-grid, .cat-grid { grid-template-columns: 1fr; }
+  .hero-cta .btn { width: 100%; }
 }

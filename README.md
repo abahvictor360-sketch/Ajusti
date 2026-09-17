@@ -93,11 +93,17 @@ the piece on the deals page. It appears across the site automatically.
 
 ## Responsive
 
-Verified with a scripted sweep at 320, 360, 375, 390, 414, 480, 600, 768,
-834, 1024, 1280, 1440 and 1920px across every page — no horizontal scroll
-and nothing overflowing the viewport at any of them. Layout shifts down
-through four breakpoints (1040, 880, 620, 430) plus a 380px stack for the
-narrowest phones.
+Verified with a scripted sweep over 19 viewports across every page,
+including portrait shapes (625×1100, 768×1280, 834×1194, 1080×1920,
+1200×1920) as well as the usual landscape ones. The sweep checks for
+horizontal scroll, elements past the viewport edge, the deal stamp
+colliding with its heading, carousel controls sitting on hero text, and
+product cards squeezed below 150px.
+
+Breakpoints, widest first: 1040 (4→3 product columns), 880 (side-by-side
+layouts stack), 760 (→2 product columns), 700 (carousel controls shrink),
+620 (single-column grids, logo tagline hidden), 430 (compact header), 380
+(trust strips and footer stack), 360 (→1 product column).
 
 ## Notes
 
