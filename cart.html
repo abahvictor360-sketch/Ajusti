@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your Bag — Ajusti</title>
+<title>Your Bag | Ajusti</title>
 <meta name="description" content="Review your Ajusti bag and check out.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23e9574e'/><text x='16' y='23' font-size='18' font-family='Georgia' fill='white' text-anchor='middle'>A</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cartLayout').innerHTML = `
         <div class="empty" style="grid-column:1/-1">
           <h2>Your bag is empty</h2>
-          <p>Nothing here yet — the Ankara rail is waiting.</p>
+          <p>Nothing here yet. The Ankara rail is waiting.</p>
           <a class="btn btn-primary" href="shop.html">Start shopping</a>
         </div>`;
       return;
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('applyPromo')?.addEventListener('click', () => {
     const code = document.getElementById('promo').value.trim().toUpperCase();
-    if (code === 'AJUSTI10') { promoOn = true; store.set('promo', true); toast('AJUSTI10 applied — 10% off'); }
+    if (code === 'AJUSTI10') { promoOn = true; store.set('promo', true); toast('AJUSTI10 applied: 10% off'); }
     else toast('That code is not valid');
     draw();
   });
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (waBtn) waBtn.href = waLink(
     'Hi Ajusti, I would like to order:\n' +
     (cart.length
-      ? cart.map(l => `• ${l.qty} × ${l.name} (size ${l.size}) — ${money(l.price * l.qty)}`).join('\n')
+      ? cart.map(l => `• ${l.qty} × ${l.name} (size ${l.size}) at ${money(l.price * l.qty)}`).join('\n')
       : '(nothing in my bag yet)'));
 
   draw();

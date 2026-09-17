@@ -1,5 +1,5 @@
 /* ===========================================================
-   Ajusti — shared shell, cart state and product rendering.
+   Ajusti: shared shell, cart state and product rendering.
    Header/footer are injected from here so every page stays
    in sync, and it works straight off the filesystem (no fetch).
    =========================================================== */
@@ -156,7 +156,7 @@ function renderShell() {
             <div>
               ${LOGO}
               <p class="muted" style="margin-top:1rem;max-width:34ch;font-size:.9rem">
-                Ajusti brings Ankara, adire and locally made pieces from Nigerian tailors straight to your wardrobe — made to measure, shipped nationwide.
+                Ajusti brings Ankara, adire and locally made pieces from Nigerian tailors straight to your wardrobe: made to measure and shipped nationwide.
               </p>
               <div class="socials">
                 <a href="#" aria-label="Instagram">${svg('ig')}</a>
@@ -337,7 +337,7 @@ function initChrome() {
   document.body.append(bar, top);
 
   // Floating WhatsApp button. Pages can set WA_MESSAGE before this runs to
-  // prefill the chat — the product page names the piece you were looking at.
+  // prefill the chat; the product page names the piece you were looking at.
   const wa = document.createElement('a');
   wa.className = 'wa-fab';
   wa.href = waLink(window.WA_MESSAGE || 'Hi Ajusti, I saw your site and I have a question.');
@@ -427,7 +427,7 @@ function initPWA() {
       <img src="assets/icons/icon-192.png" alt="" width="42" height="42">
       <div>
         <b>Install Ajusti</b>
-        <small>Add the shop to your home screen — works offline too.</small>
+        <small>Add the shop to your home screen. Works offline too.</small>
       </div>
       <button class="btn btn-primary btn-sm" data-install>Install</button>
       <button class="install-close" aria-label="Dismiss">&times;</button>`;
@@ -450,7 +450,7 @@ function initPWA() {
 
   window.addEventListener('appinstalled', () => {
     document.querySelector('.install-banner')?.remove();
-    toast('Ajusti installed — find it on your home screen');
+    toast('Ajusti installed. Find it on your home screen');
   });
 }
 

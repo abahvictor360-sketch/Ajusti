@@ -1,9 +1,9 @@
-# Ajusti — Wear Your Culture
+# Ajusti: Wear Your Culture
 
 Storefront for **Ajusti**, an e-commerce site selling Ankara dresses, bags, shoes,
 men's native wear and locally made pieces (adire, aso-oke, lace) from Nigerian tailors.
 
-Built as a static site — plain HTML, CSS and vanilla JavaScript. No build step,
+Built as a static site: plain HTML, CSS and vanilla JavaScript. No build step,
 no dependencies. Open `index.html` or serve the folder and it runs.
 
 ```bash
@@ -22,7 +22,7 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 | `checkout.html` | Delivery form, payment method choice, order confirmation |
 | `wishlist.html` | Saved pieces |
 | `about.html` | Brand story, stats, principles |
-| `blog.html` | Journal — styling, fabric care, measurements |
+| `blog.html` | Journal: styling, fabric care, measurements |
 | `contact.html` | Contact form, studio details, FAQ accordion |
 | `account.html` | Sign in / register / track order |
 
@@ -64,7 +64,7 @@ shell; old caches are deleted on activate.
 
 ```
 css/style.css     all styling, one file, CSS custom properties at the top
-js/products.js    catalogue data — 49 products across 5 categories, sizes, helpers
+js/products.js    catalogue data: 49 products across 5 categories, sizes, helpers
 js/main.js        shared header/footer, cart + wishlist state, product card rendering
 assets/products/  product photography (800×800)
 assets/site/      hero cut-out, deal banner and about imagery
@@ -72,8 +72,8 @@ assets/icons/     PWA and home-screen icons
 manifest.webmanifest, sw.js, offline.html   PWA files
 ```
 
-The header and footer are injected by `js/main.js` so every page stays in sync —
-edit `NAV_LINKS` or the footer template there once and it applies everywhere.
+The header and footer are injected by `js/main.js` so every page stays in sync.
+Edit `NAV_LINKS` or the footer template there once and it applies everywhere.
 
 Cart and wishlist state persist in `localStorage` under the `ajusti.*` keys.
 
@@ -108,6 +108,6 @@ layouts stack), 760 (→2 product columns), 700 (carousel controls shrink),
 ## Notes
 
 - Prices are in naira and formatted through `money()` in `js/products.js`.
-- Forms (newsletter, contact, account, checkout) are front-end only — they confirm
+- Forms (newsletter, contact, account, checkout) are front-end only. They confirm
   on screen but post nowhere. Wire them to a backend or a form service before launch.
 - Payment is not integrated; the checkout page collects no card details.

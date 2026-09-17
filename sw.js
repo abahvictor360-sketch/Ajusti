@@ -9,7 +9,7 @@
                   separate cache that is trimmed so it cannot grow forever
    =========================================================== */
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL = `ajusti-shell-${VERSION}`;
 const IMAGES = `ajusti-images-${VERSION}`;
 const MAX_IMAGES = 80;

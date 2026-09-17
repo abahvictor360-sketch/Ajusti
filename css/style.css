@@ -1,5 +1,5 @@
 /* ===========================================================
-   Ajusti — Wear Your Culture
+   Ajusti: Wear Your Culture
    Base styles for the whole storefront
    =========================================================== */
 
@@ -704,6 +704,10 @@ section { padding: 3.2rem 0; }
   /* Stacked rows stretch by default, which padded dead space above the
      copy; start-align them so the hero is only as tall as its content. */
   .hero-inner { padding: 2rem 20px 3.4rem; gap: 1.2rem; align-content: start; }
+  /* Centre the copy once it sits above the artwork rather than beside it. */
+  .hero-copy { text-align: center; }
+  .hero-copy p { margin-inline: auto; max-width: 46ch; }
+  .hero-cta { justify-content: center; }
   .hero-slide { align-self: start; }
   .hero-art { min-height: 0; }
   .hero h1 { margin: 1rem 0 .8rem; }
